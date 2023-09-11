@@ -1,33 +1,36 @@
 #! /usr/bin/bash
 
-while true;do
+args=("$@")
 
-	read -p "Enter an expression": num1 operator num2
+result=${args[0]}
 
-    	if [[ $num1 == 'q' || $operator == 'q' || $num2 == 'q' ]]; then
-        	echo "Exiting..."
-        	exit 0
-    	fi
+for ((i=1; i<$#; i+=2)); do
+    operator=${args[$i]}
+    num=${args[$((i+1))]}
 
-	case $operator in
-		"+")
-			echo "$(($num1 + $num2))"
-			;;
-		"-")
-			echo "$(($num1 - $num2))"
-			;;
-		"x")
-			echo "$(($num1 * $num2))"
-			;;
-		"/")
-			if [ $num2 -eq 0 ]; then
-				echo "Cannot divide by 0"
-			else
-				echo "$(($num1 / $num2))"
-			fi
-			;;
-		*)
-			echo "Invalid!"
-			;;
-	esac
+    case $operator in
+        "+")
+            result=$(($result + $num))
+            ;;
+        "-")
+            result=$(($result - $num))
+            ;;
+        "x")
+            result=$(($result * $num))
+            ;;
+        "/")
+            if [ $num -eq 0 ]; then
+                echo "Cannot divide by 0"
+                exit 1
+            else
+                result=$(($result / $num))
+            fi
+            ;;
+        *)
+            echo "Invalid: $operator"
+            exit 1
+            ;;
+    esac
 done
+
+echo $result
