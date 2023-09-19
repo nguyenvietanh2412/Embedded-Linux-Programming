@@ -1,21 +1,29 @@
 #include <stdio.h>
-
+#include <unistd.h>
+#include <fcntl.h>
+#include <string.h>
+#include <errno.h>
 int main(int argc, char *argv[]) {
+  int fd;
+  int n; 
+  if(argc != 3) {
+    printf("Valid syntax: <executable file> <filename> <string>\n");
+    return 1;
+  }
 
-    if(argc != 3) {
-        printf("Valid syntax: <executable file> <filename> <string>\n");
-        return 1;
-    }
+  fd = open(argv[1], O_WRONLY, 600);
+  if(fd == -1) {
+    perror("Error opening file");
+    return 1;
+  }
 
-    FILE *file = fopen(argv[1], "w");
-    if(file == NULL) {
-        printf("Error opening file %s\n", argv[1]);
-        return 1;
-    }
+  n = write(fd, argv[2], strlen(argv[2]));
+  if (n == -1){
+    perror("Error writing to file");
+    close(fd);
+    return 1;
+  }
 
-    fprintf(file, "%s\n", argv[2]);
-
-    fclose(file);
-
-    return 0;
+  close(fd);
+  return 0;
 }
