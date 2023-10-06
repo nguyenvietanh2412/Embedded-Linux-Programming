@@ -1,6 +1,5 @@
-#include <stdio.h>
+#include "daemon.h"
 
-int start_daemon();
 int main(){
     start_daemon();
     getchar();
